@@ -71,9 +71,7 @@ def find_cheapest():
 		return 'parameter "search" is missing !'
 	else : 
 		search = request.args.get("search")
-	if "+" in search : 
-		search = search.split("+")
-	
+		
 	source = request.args.get("source", default = "")
 	
 	# Build a connection to DB
@@ -81,20 +79,10 @@ def find_cheapest():
 	cursor = cnx.cursor()
 
 	# Send query to Get at most 10 item's data with specificed kind which provide lowest price
-	tmp = ""
-	if type(search) is list :
-		for i in range(len(search)):
-			if i != 0 :
-				tmp += "AND "
-			tmp += "WHERE product LIKE '%{}%' ".format(search[i])
-	else : 
-		tmp += "WHERE product LIKE '%{}%' ".format(search)
-	
-	query = "Select product, price, url, source, picture, update_time FROM test " + tmp + "AND price in (SELECT MIN(price) as minimum FROM test " + tmp
-	
+	query = "Select product, price, url, source, picture, update_time FROM test WHERE product LIKE '%{0}%' AND price in (SELECT MIN(price) as minimum FROM test WHERE product LIKE '%{0}%') ".format(search)
 	if source is not "":
 		query += "AND source = '{}'".format(source)
-	query += ") Limit 10"
+	query += "Limit 10"
 	cursor.execute(query)
 	
 	# Get data from cursor
@@ -119,14 +107,12 @@ def price_data():
 		return 'parameter "search" is missing !'
 	else : 
 		search = request.args.get("search")
+		
 	# Optional parameters
 	unit = request.args.get("unit", default = 100, type = int)
 	min = request.args.get("min", default = 0, type = int)
 	max = request.args.get("max", default = 1000, type = int)
 	source = request.args.get("source", default = "")
-	
-	if "+" in search : 
-		search = search.split("+")
 	
 	# Build a connection to DB
 	cnx = mysql.connector.connect(user = 'wing', password = 'qwert12345',host = 'localhost',database = 'project')
@@ -140,17 +126,8 @@ def price_data():
 	query = "SELECT COUNT(*) AS num , CASE " 
 	for i in range((region - 2)):
 		query += "when price >= {0[%d"%i + "]} AND price < {0[%d"%(i+1) + "]} Then {0[%d"%i + "]} "
-	query += "when price BETWEEN {0[%d"%(region - 2) + "]} AND {0[%d"%(region - 1) + "]} THEN {0[%d"%(region - 2) + "]} WHEN price > {0[%d"%(region - 1) + "]} THEN {0[%d"%(region - 1) + "]} END AS price_lower_limit FROM test "
-	query = query.format(lower_limit_list)
-
-	if type(search) is list :
-		for i in range(len(search)):
-			if i != 0 :
-				query += "AND "
-			query += "WHERE product LIKE '%{}%' ".format(search[i])
-	else : 
-		query += "WHERE product LIKE '%{}%' ".format(search)
-		
+	query += "when price BETWEEN {0[%d"%(region - 2) + "]} AND {0[%d"%(region - 1) + "]} THEN {0[%d"%(region - 2) + "]} WHEN price > {0[%d"%(region - 1) + "]} THEN {0[%d"%(region - 1) + "]} END AS price_lower_limit FROM test WHERE product LIKE '%{1}%' "
+	query = query.format(lower_limit_list,search)
 	if source is not "":
 		query += "AND source = '{}'".format(source)
 	query += "GROUP BY price_lower_limit"
@@ -177,4 +154,4 @@ def price_data():
 
 app.wsgi_app = ProxyFix(app.wsgi_app)
 if __name__ == "__main__" :
-	app.run(host=os.getenv('IP', '0.0.0.0'),port=int(os.getenv('PORT', 8080)),debug=True)
+	app.run(host=os.getenv('IP', '0.0.0.0'),port=int(os.getenv('PORT', 5000)))
