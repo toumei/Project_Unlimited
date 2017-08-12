@@ -73,7 +73,7 @@ def find_cheapest():
 	source = request.args.get("source", default = "")
 	
 	# Build a connection to DB
-	cnx = mysql.connector.connect(user = 'wing', password = 'qwert12345',host = 'localhost',database = 'project')
+	cnx = mysql.connector.connect(user = '', password = '',host = 'localhost',database = 'project')
 	cursor = cnx.cursor()
 
 	# Send query to Get at most 10 item's data with specificed kind which provide lowest price
@@ -113,7 +113,7 @@ def price_data():
 	source = request.args.get("source", default = "")
 	
 	# Build a connection to DB
-	cnx = mysql.connector.connect(user = 'wing', password = 'qwert12345',host = 'localhost',database = 'project')
+	cnx = mysql.connector.connect(user = '', password = '',host = 'localhost',database = 'project')
 	cursor = cnx.cursor()
 
 	# Develop a list of data for query execution
@@ -161,7 +161,7 @@ def predict_data():
 	
 	if category is not None :
 		#Build a connection to DB
-		cnx = mysql.connector.connect(user = 'wing', password = 'qwert12345',host = 'localhost',database = 'project')
+		cnx = mysql.connector.connect(user = '', password = '',host = 'localhost',database = 'project')
 		cursor = cnx.cursor()
 		
 		query = "SELECT predict_price FROM `predictionTest` WHERE category ='{}' AND predict_date = CURRENT_DATE+1".format(category)
@@ -201,7 +201,7 @@ def sprint2_find_cheapest():
 		kind = request.args.get("kind")
 	
 	#Build a connection to DB
-	cnx = mysql.connector.connect(user = 'wing', password = 'qwert12345',host = 'localhost',database = 'project')
+	cnx = mysql.connector.connect(user = '', password = '',host = 'localhost',database = 'project')
 	cursor = cnx.cursor()
 
 	#Send query to Get at most 10 item's data with specificed kind which provide lowest price
@@ -235,7 +235,83 @@ def sprint2_price_data():
 	max = request.args.get("max", default = 1000, type = int)
 	
 	#Build a connection to DB
-	cnx = mysql.connector.connect(user = 'wing', password = 'qwert12345',host = 'localhost',database = 'project')
+	cnx = mysql.connector.connect(user = '', password = '',host = 'localhost',database = 'project')
+	cursor = cnx.cursor()
+
+	#Develop a list of data for query execution
+	query_list = []
+	lower_limit_list = range(max + 1)[min : (max+1) : unit]
+	region_num = len(lower_limit_list)
+	for i in lower_limit_list :
+		query_list.append(i)
+		if i != max :
+			query_list.append(i+unit)
+		query_list.append(i)
+
+	query_list.append(kind)
+	
+	#Send query to DB
+	sql_string = "SELECT COUNT(*) AS num , CASE " + "WHEN price >= %d AND price < %d THEN %d " * (region_num - 2) + "WHEN price BETWEEN %d AND %d THEN %d WHEN price > %d THEN %d END AS price_lower_limit FROM test WHERE kind = '%s' GROUP BY price_lower_limit"
+
+	query = (sql_string % tuple(query_list))
+	cursor.execute(query)
+	
+	#Take out the data from cursor
+	results = {}
+	for num in cursor : 
+		results[num[1]] = num[0]
+	
+	#Close object
+	cursor.close()
+	cnx.close()
+	
+	return jsonify(results)
+
+# API for SPRINT 2
+@app.route("/api/find_cheapest", methods=['GET'])
+def sprint2_find_cheapest():
+	#Get parameter from call
+	if request.args.get("kind") is None : 
+		return 'parameter "kind" is missing !'
+	else : 
+		kind = request.args.get("kind")
+	
+	#Build a connection to DB
+	cnx = mysql.connector.connect(user = '', password = '',host = 'localhost',database = 'project')
+	cursor = cnx.cursor()
+
+	#Send query to Get at most 10 item's data with specificed kind which provide lowest price
+	query = (("SELECT product, price, url, website, picture, update_time FROM test WHERE kind='%s' AND price IN (SELECT MIN(price) AS minimum FROM test WHERE kind = '%s') LIMIT 10") % (kind, kind))
+	cursor.execute(query)
+	
+	#Get data from cursor
+	results = []
+	for (product, price, url, website, picture, update_time) in cursor :
+		update_time = ("{:%d %b %Y}").format(update_time)
+		row = dict(zip(("p_name", "price", "url", "source", "imagePath", "update_time"),(product, price, url, website, picture, update_time)))
+		results.append(row)
+		
+	#Close object
+	cursor.close()
+	cnx.close()
+	
+	#Produce and return JSON array
+	return jsonify(results)
+
+@app.route("/api/price_data", methods=['GET'])
+def sprint2_price_data():
+	#Get parameters from call
+	if request.args.get("kind") is None : 
+		return 'parameter "kind" is missing !'
+	else : 
+		kind = request.args.get("kind")
+
+	unit = request.args.get("unit", default = 100, type = int)
+	min = request.args.get("min", default = 0, type = int)
+	max = request.args.get("max", default = 1000, type = int)
+	
+	#Build a connection to DB
+	cnx = mysql.connector.connect(user = '', password = '',host = '',database = '')
 	cursor = cnx.cursor()
 
 	#Develop a list of data for query execution
