@@ -19,7 +19,9 @@ from hanziconv import HanziConv
 def taobao_3C_crawler(search):
 	sortParam = ["", "default", "renqi-desc", "sale-desc", "credit-desc", "price-asc", "price-desc", "total-asc", "total-desc"]
 	taobaoUrl = "https://s.taobao.com/list?vlist=1&app=vproduct&cps=yes&cd=false&v=auction&tab=all&from_type=3c&q={0}&sort={1}"
-	url = taobaoUrl.format(search,sortParam[0])
+	searchSimp = HanziConv.toSimplified(search) 
+	
+	url = taobaoUrl.format(searchSimp,sortParam[0])
 	firstUrl = requests.get(url)
 
 	dataString = re.search('g_page_config =(.*?)\};', firstUrl.text)
@@ -27,7 +29,7 @@ def taobao_3C_crawler(search):
 	totalPage = jsonDict['mods']['pager']['data']['totalPage']
 	pageSize = jsonDict['mods']['pager']['data']['pageSize']
 	
-	searchUrls = [ (taobaoUrl.format(search,sort) + "&s=" + str(page)) for sort in sortParam for page in range(0,pageSize*totalPage+1,pageSize) ]
+	searchUrls = [ (taobaoUrl.format(searchSimp,sort) + "&s=" + str(page)) for sort in sortParam for page in range(0,pageSize*totalPage+1,pageSize) ]
 	
 	pool = ThreadPool(4)
 	resource = pool.map(requests.get,searchUrls)
@@ -76,7 +78,6 @@ if __name__ == '__main__':
 	searchKey = ["手機", "平板電腦", "相機", "單反", "台式機", "3C數碼配件"]
 	print ("Start : ",time.asctime( time.localtime()))
 	
-	search = [HanziConv.toSimplified(i) for i in searchKey]
 	insertionData = [taobao_3C_crawler(search) for search in searchKey]
 	
 	print("web crawling finish & insertion start : ", time.asctime( time.localtime()))

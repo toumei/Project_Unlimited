@@ -40,3 +40,6 @@ def get_current_rate() :
 	cnx.close()
 
 	return (rate)
+
+if __name__ == '__main__':
+	crawling_rate()
