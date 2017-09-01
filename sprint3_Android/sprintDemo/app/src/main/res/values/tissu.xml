@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="tissu_name">
+        <item>衛生紙E</item>
+        <item>衛生紙F</item>
+        <item>衛生紙G</item>
+        <item>衛生紙H</item>
+        <item>衛生紙I</item>
+        <item>衛生紙J</item>
+        <item>衛生紙K</item>
+        <item>衛生紙D</item>
+        <item>衛生紙A</item>
+        <item>衛生紙B</item>
+        <item>衛生紙C</item>
+    </string-array>
+    <string-array name="tissu_price">
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+    </string-array>
+</resources>

@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">Project3</string>
+    <string-array name="title">
+        <item>AANZJX</item>
+        <item>AAZBN</item>
+        <item>ASSF</item>
+        <item>ADXC</item>
+        <item>ACVB</item>
+        <item>ADDB</item>
+        <item>BA</item>
+        <item>BANXJH</item>
+        <item>BANXNK</item>
+        <item>BANJXH</item>
+        <item>BABNA</item>
+        <item>LC</item>
+        <item>MC</item>
+        <item>NCA</item>
+        <item>OAx</item>
+        <item>PSC</item>
+        <item>QSFFC</item>
+        <item>RASDFG</item>
+        <item>SSDFG</item>
+    </string-array>
+    <string-array name="suggest">
+        <item>ASXTYAUJKLM</item>
+        <item>ASXTYAUJKLM</item>
+        <item>ASXTYAUJKLM</item>
+        <item>ASXTYAUJKLM</item>
+        <item>ASXTYAUJKLM</item>
+        <item>ASXTYAUJKLM</item>
+        <item>ASXTYAUJKLM</item>
+        <item>ASXTYAUJKLM</item>
+        <item>ASXTYAUJKLM</item>
+        <item>ASXTYAUJKLM</item>
+        <item>ASXTYAUJKLM</item>
+        <item>ASXTYAUJKLM</item>
+        <item>ASXTYAUJKLM</item>
+        <item>ASXTYAUJKLM</item>
+        <item>ASXTYAUJKLM</item>
+        <item>ASXTYAUJKLM</item>
+        <item>ASXTYAUJKLM</item>
+        <item>ASXTYAUJKLM</item>
+        <item>ASXTYAUJKLM</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+</resources>
