@@ -82,8 +82,8 @@ public class MainActivity extends AppCompatActivity  {
     //private ListView pro_List;
     //private LinearLayout layout;
     private String tokenAPI ="http://163.13.127.98:8088/api/auth";
-    private String pro_API = "http://163.13.127.98:8088/api/v1.0/find_cheapest";
-    private String chartAPI = "http://163.13.127.98:8088/api/price_data";
+    //private String pro_API = "http://163.13.127.98:8088/api/v1.0/find_cheapest";
+    //private String chartAPI = "http://163.13.127.98:8088/api/price_data";
     private String[] infoStr = {"img","name","price","web","url","date"};
     private int[] infoID = {R.id.img,R.id.name,R.id.price,R.id.web,R.id.url,R.id.date};
     private ListAdapter listAdapter;

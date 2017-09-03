@@ -31,8 +31,8 @@ public class API {
                 String stringEntity = URLEncodedUtils.format(sendlist,"UTF-8");
                 params += "?"+stringEntity;
                 HttpGet httpGet = new HttpGet(params);
-                httpGet.setHeader("Authorization","Bearer "+access_token);
-                Log.e("getAuth",access_token);
+                httpGet.setHeader("Authorization","JWT "+access_token);
+                //Log.e("getAuth",access_token);
                 HttpResponse httpResponse = httpClient.execute(httpGet);
                 responseString = EntityUtils.toString(httpResponse.getEntity(),"UTF-8");
             }else if(method == "POST"){
@@ -51,7 +51,7 @@ public class API {
             e.printStackTrace();
             Log.e("Error", e.getMessage());
         }
-        Log.e("APItest",responseString.toString());
+        //Log.e("APItest",responseString.toString());
         return responseString;
     }
 }
