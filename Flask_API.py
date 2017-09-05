@@ -3,7 +3,7 @@ from flask_httpauth import HTTPBasicAuth,HTTPTokenAuth
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.contrib.fixers import ProxyFix
-from datetime import timedelta
+from datetime import timedelta, datetime
 import os
 import mysql.connector
 # ORM mapping
@@ -152,6 +152,56 @@ def sprint4_price_data():
 		stat = dict(zip(('min', 'max', 'avg'),(data[0], data[1], float(data[2]))))
 	
 	return jsonify({'distribution':results,'statistic':stat})
+	
+@app.route("/api/v1.1/get_rmb_rate", methods=['GET'])
+@jwt_required()
+def sprint4_get_rmb_rate() :
+	start = request.args.get("from")
+	start = datetime.strptime(start, '%Y-%m-%d').date()
+	end = request.args.get("to")
+	end = datetime.strptime(end, '%Y-%m-%d').date()
+	
+	result = select(i for i in RMB_rate if i.update_time >= start and i.update_time <= end)[:]
+	resultList = [i.to_dict(exclude='id') for i in result]
+	
+	# Produce and return JSON array
+	return jsonify(resultList)
+	
+@app.route("/api/v1.1/predict", methods=['GET'])
+@jwt_required()
+def sprint4_get_prediction() :
+	# Get parameters from call
+	search = request.args.get("search")
+	category = request.args.get("category")
+	if search is None and category is None: 
+		return "parameter search / category is required !"
+		
+	if category is not None :
+		result = select(i for i in Prediction if i.category == category and i.update_time == date.today()).first()
+		result = result.to_dict(exclude='id')
+		# Return JSON array
+		return jsonify(result)
+		
+	else : 
+		search = wordPhasing(search)
+		query = ViewAll.select()
+		for s in search :
+			query = query.filter(lambda p : s in p.product)
+			
+		cate = query.order_by(ViewAll.price, desc(ViewAll.update_time))[:1]
+		for i in cate : 
+			cate = i.to_dict('category')
+
+		result = select(p for p in Prediction if p.category == cate['category'] and p.update_time == date.today()).first()
+		result = result.to_dict(exclude='id')
+		
+		categories = select(p.category for p in ViewAll if search in p.product)
+		categories = list(categories)
+		
+		result['sugguest_category'] = categories
+	
+		# Return JSON array
+		return jsonify(result)
 	
 # Sprint 3
 # Connection Test

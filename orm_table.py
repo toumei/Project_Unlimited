@@ -31,6 +31,13 @@ class RMB_rate (db.Entity):
 	_table_ = 'exchangeRate'
 	rate = Required(float)
 	update_time = Required(date)
+	
+class Prediction (db.Entity) : 
+	_table_ = 'predictionTest'
+	id = PrimaryKey(int, auto =True)
+	category = Required(str)
+	tmr_price = Required(int)
+	update_time = Required(date)
 
 db.generate_mapping()
 	
