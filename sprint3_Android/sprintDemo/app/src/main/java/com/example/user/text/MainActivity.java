@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity  {
                 case 1:
                     return new PriceGuessFragment();
                 case 2:
-                    return new RateFragment();
+                    return RateFragment.newInstance(access_token);
                 case 3:
                     return new CheapListFragment();
                 default:

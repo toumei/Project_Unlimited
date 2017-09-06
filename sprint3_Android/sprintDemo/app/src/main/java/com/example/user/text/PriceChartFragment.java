@@ -48,6 +48,7 @@ public class PriceChartFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         //get access token
         Bundle bundle = getArguments();
         Log.d("test", bundle.toString());
@@ -69,13 +70,13 @@ public class PriceChartFragment extends Fragment {
         new ChartTask().execute(chartAPI);
 
         View v = inflater.inflate(R.layout.pricechartfrag,container,false);
-        
+
         return v;
     }
 
 
-    //pricechart api
 
+    //pricechart api
     class ChartTask extends AsyncTask<String,Void, Void> {
 
         String[] intKey;

@@ -22,11 +22,11 @@
                 android:textSize="20sp"
                 android:textColor="@color/colorPrimaryDark"/>
 
-            <ImageView
-                android:id="@+id/imageView3"
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/Ratechart"
                 android:layout_width="match_parent"
-                android:layout_height="286dp"
-                app:srcCompat="@drawable/exchange" />
+                android:layout_height="match_parent" />
+
 
         </LinearLayout>
     </ScrollView>
