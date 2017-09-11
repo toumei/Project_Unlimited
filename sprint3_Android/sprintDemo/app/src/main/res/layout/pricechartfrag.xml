@@ -22,7 +22,7 @@
                 android:textSize="20sp" />
 
             <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/chart_1"
+                android:id="@+id/Barchart"
                 android:layout_width="match_parent"
                 android:layout_height="300dp" />
 

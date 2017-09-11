@@ -10,6 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -57,8 +60,7 @@ public class RateFragment extends Fragment {
 
         Log.d("access_token", access_token);
 
-        // in this example, a LineChart is initialized from xml
-        //chart = (LineChart) findViewById(R.id.chart);
+
     }
 
     @Override
@@ -71,7 +73,7 @@ public class RateFragment extends Fragment {
     }
 
     class RateTask extends AsyncTask<String, Void, Void> {
-        double rateData[];
+        Double rateData[];
         String timeData[];
         private int DATA_COUNT=0;
 
@@ -80,29 +82,30 @@ public class RateFragment extends Fragment {
             try {
                 //傳送資料
                 ArrayList<NameValuePair> sendlist = new ArrayList<NameValuePair>();
+
                 //參數
                 sendlist.add(new BasicNameValuePair("from", from_time));
                 sendlist.add(new BasicNameValuePair("to", to_time));
 
-                JSONArray dataJSON = new JSONArray(API.CallAPI("GET", params[0], sendlist, access_token));
-                Log.d("RateDataJSON", dataJSON.toString());
+                //json處理
+                JSONArray responJSON = new JSONArray(API.CallAPI("GET", params[0], sendlist, access_token));
+                Log.d("RateDataJSON", responJSON.toString());
 
-                DATA_COUNT = dataJSON.length();
-                rateData = new double[DATA_COUNT];
+                DATA_COUNT = responJSON.length();
+                rateData = new Double[DATA_COUNT];
                 timeData = new String[DATA_COUNT];
 
                 Log.d("DATA_COUNT", Integer.toString(DATA_COUNT));
 
                 //尋訪JSONObject
-                /*Iterator<String> stringIterator = dataJSON.keys();
-                for (int i=0;i<DATA_COUNT;i++){
-                    //取得key
-                    String key = stringIterator.next().toString();
 
-                    intKey[i] = key;
-                    String value = dataJSON.getString(key);
-                    intValue[i] = Integer.parseInt(value);
-                }*/
+                for (int i=0;i<DATA_COUNT;i++){
+                    JSONObject data = responJSON.getJSONObject(i);
+                    rateData[i] = data.getDouble("rate");
+                    timeData[i] = data.getString("update_time");
+                }
+
+                Log.d("DATA_CHECK", timeData[3]);
 
 
             } catch (Exception e) {
@@ -110,6 +113,32 @@ public class RateFragment extends Fragment {
             }
 
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            // in this example, a LineChart is initialized from xml
+            chart = (LineChart) getView().findViewById(R.id.Ratechart);
+
+            //data add
+            ArrayList<Entry> entries = new ArrayList<>();
+            setChartData(entries);
+
+            //add entries to set
+            LineDataSet dataSet = new LineDataSet(entries, "Lable");
+
+            //set LineChart
+            LineData lineData = new LineData(dataSet);
+            chart.setData(lineData);
+            chart.invalidate(); // refresh
+        }
+
+        private void setChartData(ArrayList<Entry> entries){
+            for(int i=0; i<DATA_COUNT; i++){
+                entries.add(new Entry((float) i, rateData[i].floatValue() ));
+            }
         }
     }
 }

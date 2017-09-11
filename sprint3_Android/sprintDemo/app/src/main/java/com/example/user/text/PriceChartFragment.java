@@ -135,7 +135,7 @@ public class PriceChartFragment extends Fragment {
             Log.d("post test","in");
 
             //產生chart
-            barChart = (BarChart) getView().findViewById(R.id.chart_1);
+            barChart = (BarChart) getView().findViewById(R.id.Barchart);
 
             //寫入data
             ArrayList<BarEntry> barEntries = new ArrayList<>();
@@ -154,6 +154,7 @@ public class PriceChartFragment extends Fragment {
             barChart.setTouchEnabled(true);
             barChart.setDragEnabled(true);
             barChart.setScaleEnabled(true);
+            barChart.invalidate(); // refresh
 
         }
 
