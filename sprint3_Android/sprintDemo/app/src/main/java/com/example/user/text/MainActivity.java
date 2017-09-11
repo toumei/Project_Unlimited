@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity  {
     //設定Fragment
     private class CustomAdapter extends FragmentPagerAdapter {
 
-        private String fragments[] = {"價格分佈","明日價格","匯率走勢","最便宜清單"};
+        private String fragments[] = {"價格分佈","匯率走勢","最便宜清單"};
         public CustomAdapter(FragmentManager supportFragmentManager, Context applicationContext) {
             super(supportFragmentManager);
         }
@@ -207,11 +207,9 @@ public class MainActivity extends AppCompatActivity  {
                 case 0:
                     return PriceChartFragment.newInstance(access_token);
                 case 1:
-                    return new PriceGuessFragment();
-                case 2:
                     return RateFragment.newInstance(access_token);
-                case 3:
-                    return new CheapListFragment();
+                case 2:
+                    return CheapListFragment.newInstance(access_token);
                 default:
                     return null;
             }
