@@ -200,39 +200,7 @@ public class CheapListFragment extends Fragment {
         }
 
     }
-
-    /*
-    private class ImgAsyncTask extends AsyncTask<String,Void,Bitmap> {
-        Bitmap bitmap;
-        int position;
-
-        @Override
-        protected Bitmap doInBackground(String... params) {
-            try {
-                position = Integer.valueOf(params[1]);
-                Log.d("picture_url check", params[0]);
-                URL url = new URL(params[0]);
-                HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-                connection.setDoInput(true);
-                connection.connect();
-                InputStream in = connection.getInputStream();
-                bitmap = BitmapFactory.decodeStream(in);
-            }catch (Exception e){
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-
-            listData[position].picture=bitmap;
-            return bitmap;
-        }
-        /*
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            super.onPostExecute(bitmap);
-            ImageView img = (ImageView)view.findViewById(R.id.img);
-            img.setImageBitmap(bitmap);
-        }
-    }*/
+    
 
     private class ListData {
 
