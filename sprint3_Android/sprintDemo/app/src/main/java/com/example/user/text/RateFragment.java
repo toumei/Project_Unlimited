@@ -88,10 +88,10 @@ public class RateFragment extends Fragment {
                 sendlist.add(new BasicNameValuePair("to", to_time));
 
                 //json處理
-                JSONArray responJSON = new JSONArray(API.CallAPI("GET", params[0], sendlist, access_token));
-                Log.d("RateDataJSON", responJSON.toString());
+                JSONArray responseJSON = new JSONArray(API.CallAPI("GET", params[0], sendlist, access_token));
+                Log.d("RateDataJSON", responseJSON.toString());
 
-                DATA_COUNT = responJSON.length();
+                DATA_COUNT = responseJSON.length();
                 rateData = new Double[DATA_COUNT];
                 timeData = new String[DATA_COUNT];
 
@@ -100,7 +100,7 @@ public class RateFragment extends Fragment {
                 //尋訪JSONObject
 
                 for (int i=0;i<DATA_COUNT;i++){
-                    JSONObject data = responJSON.getJSONObject(i);
+                    JSONObject data = responseJSON.getJSONObject(i);
                     rateData[i] = data.getDouble("rate");
                     timeData[i] = data.getString("update_time");
                 }

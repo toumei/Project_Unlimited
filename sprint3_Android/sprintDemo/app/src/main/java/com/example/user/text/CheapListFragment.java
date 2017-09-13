@@ -1,5 +1,7 @@
 package com.example.user.text;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,7 +19,11 @@ import android.widget.TextView;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -34,6 +40,8 @@ public class CheapListFragment extends Fragment {
     private String access_token;
     private String cheapAPI = "http://163.13.127.98:8088/api/v1.1/find_cheapest";
     private String record = "衛生紙";
+    private int DATA_COUNT=0;
+    private ListData[] listData;
 
     public static CheapListFragment newInstance(String access_token)
     {
@@ -67,7 +75,7 @@ public class CheapListFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.cheaplistfrag,container,false);
 
-        //listView = (ListView)v.findViewById(R.id.listview4);
+        listView = (ListView)v.findViewById(R.id.listview4);
         //searchView = (SearchView) v.findViewById(R.id.menuSearch);
 
 
@@ -81,63 +89,151 @@ public class CheapListFragment extends Fragment {
 
     //api task
     //AsyncTask<傳入值型態, 更新進度型態, 結果型態>
-    class CheapTask extends AsyncTask<String,Void, Void>{
+    private class CheapTask extends AsyncTask<String,Void, Void>{
 
         @Override
         protected Void doInBackground(String... params) {
             try{
+
+                // call api
                 ArrayList<NameValuePair> sendlist = new ArrayList<NameValuePair>();
                 sendlist.add(new BasicNameValuePair("search",record));
                 JSONArray responseJSON = new JSONArray(API.CallAPI("GET",params[0],sendlist,access_token));
-                Log.d("Arraytest",responseJSON.toString());
+                DATA_COUNT=responseJSON.length();
+
+                // json資料處理
+                listData = new ListData[DATA_COUNT];
+                for(int i=0; i<DATA_COUNT; i++){
+                    JSONObject data = responseJSON.getJSONObject(i);
+                    listData[i] = new ListData();
+                    listData[i].picture_url = "https:" + data.getString("picture");
+                    listData[i].price = "$" + data.getString("price") + "元";
+                    listData[i].product = data.getString("product");
+                    listData[i].source = data.getString("source");
+                    listData[i].update_time = data.getString("update_time");
+                    listData[i].item_url = "https:" + data.getString("url");
+                }
 
             }catch (Exception e){
                 e.printStackTrace();
             }
             return null;
         }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            CheapListAdapter listAdapter = new CheapListAdapter();
+            listView.setAdapter(listAdapter);
+
+        }
     }
 
-    /*
-    class MyAdapter extends BaseAdapter {
 
+    private class CheapListAdapter extends BaseAdapter {
+
+        //取得 ListView 列表 Item 的數量
         @Override
         public int getCount() {
 
-            return imgs.length;
+            return DATA_COUNT;
         }
 
+        //回傳Item的資料
         @Override
         public Object getItem(int position) {
 
-            return null;
+            return listData[position];
         }
 
+        //回傳Item的ID
         @Override
         public long getItemId(int position) {
 
-            return 0;
+            return position;
         }
 
+        //回傳處理後的ListItem畫面
         @Override
-        public View getView(int i, View view, ViewGroup parent) {
-            view = getLayoutInflater(null).inflate(R.layout.listview, null);
-            ImageView imageView = (ImageView) view.findViewById(R.id.img);
-            TextView textView_name = (TextView) view.findViewById(R.id.name);
-            TextView textView_price = (TextView) view.findViewById(R.id.price);
-            TextView textView_web = (TextView) view.findViewById(R.id.web);
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder holder;
 
-            imageView.setImageResource(imgs[i]);
-            textView_name.setText(names[i]);
-            textView_price.setText(price[i]);
-            textView_web.setText(webs[i]);
+            if(convertView == null){
+                holder = new ViewHolder();
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.listview, null);
+                holder.img = (ImageView) convertView.findViewById(R.id.img);
+                holder.name = (TextView) convertView.findViewById(R.id.name);
+                holder.price = (TextView) convertView.findViewById(R.id.price);
+                holder.web = (TextView) convertView.findViewById(R.id.web);
+                holder.url = (TextView) convertView.findViewById(R.id.url);
+                holder.date = (TextView) convertView.findViewById((R.id.date));
+                convertView.setTag(holder);
+            }else{
+                holder = (ViewHolder) convertView.getTag();
+            }
 
-            return view;
+            //圖片url轉bitmap
+            new ImgAsyncTask().execute(listData[position].picture_url);
+
+            //listview 內容設定
+            holder.name.setText(listData[position].product);
+            holder.price.setText(listData[position].price);
+            holder.web.setText(listData[position].source);
+            holder.url.setText(listData[position].item_url);
+            holder.date.setText(listData[position].update_time);
+
+            return convertView;
         }
 
     }
-    */
 
+    private class ImgAsyncTask extends AsyncTask<String,Void,Bitmap> {
+        Bitmap bitmap;
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            try {
+                Log.d("picture_url check", params[0]);
+                URL url = new URL(params[0]);
+                HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream in = connection.getInputStream();
+                bitmap = BitmapFactory.decodeStream(in);
+            }catch (Exception e){
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return bitmap;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            ImageView img = (ImageView)LayoutInflater.from(getContext()).inflate(R.layout.listview, null).findViewById(R.id.img);
+            img.setImageBitmap(bitmap);
+        }
+    }
+
+    private class ListData {
+
+        String picture_url;
+        String price;
+        String product;
+        String source;
+        String update_time;
+        String item_url;
+
+    }
+
+    private static class ViewHolder{
+        ImageView img;
+        TextView name;
+        TextView price;
+        TextView web;
+        TextView url;
+        TextView date;
+    }
 
 }
 
