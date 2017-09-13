@@ -42,6 +42,7 @@ public class CheapListFragment extends Fragment {
     private String record = "衛生紙";
     private int DATA_COUNT=0;
     private ListData[] listData;
+    private View view;
 
     public static CheapListFragment newInstance(String access_token)
     {
@@ -74,6 +75,7 @@ public class CheapListFragment extends Fragment {
         new CheapTask().execute(cheapAPI);
 
         View v = inflater.inflate(R.layout.cheaplistfrag,container,false);
+        view = v;
 
         listView = (ListView)v.findViewById(R.id.listview4);
         //searchView = (SearchView) v.findViewById(R.id.menuSearch);
@@ -90,6 +92,8 @@ public class CheapListFragment extends Fragment {
     //api task
     //AsyncTask<傳入值型態, 更新進度型態, 結果型態>
     private class CheapTask extends AsyncTask<String,Void, Void>{
+
+        Bitmap bitmap;
 
         @Override
         protected Void doInBackground(String... params) {
@@ -112,7 +116,18 @@ public class CheapListFragment extends Fragment {
                     listData[i].source = data.getString("source");
                     listData[i].update_time = data.getString("update_time");
                     listData[i].item_url = "https:" + data.getString("url");
+
+                    // 圖片處理
+                    URL url = new URL(listData[i].picture_url);
+                    HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+                    connection.setDoInput(true);
+                    connection.connect();
+                    InputStream in = connection.getInputStream();
+                    bitmap = BitmapFactory.decodeStream(in);
+                    listData[i].picture=bitmap;
                 }
+
+
 
             }catch (Exception e){
                 e.printStackTrace();
@@ -125,7 +140,6 @@ public class CheapListFragment extends Fragment {
             super.onPostExecute(aVoid);
             CheapListAdapter listAdapter = new CheapListAdapter();
             listView.setAdapter(listAdapter);
-
         }
     }
 
@@ -160,7 +174,7 @@ public class CheapListFragment extends Fragment {
 
             if(convertView == null){
                 holder = new ViewHolder();
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.listview, null);
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.listview, parent, false);
                 holder.img = (ImageView) convertView.findViewById(R.id.img);
                 holder.name = (TextView) convertView.findViewById(R.id.name);
                 holder.price = (TextView) convertView.findViewById(R.id.price);
@@ -172,10 +186,10 @@ public class CheapListFragment extends Fragment {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            //圖片url轉bitmap
-            new ImgAsyncTask().execute(listData[position].picture_url);
+
 
             //listview 內容設定
+            holder.img.setImageBitmap(listData[position].picture);
             holder.name.setText(listData[position].product);
             holder.price.setText(listData[position].price);
             holder.web.setText(listData[position].source);
@@ -187,12 +201,15 @@ public class CheapListFragment extends Fragment {
 
     }
 
+    /*
     private class ImgAsyncTask extends AsyncTask<String,Void,Bitmap> {
         Bitmap bitmap;
+        int position;
 
         @Override
         protected Bitmap doInBackground(String... params) {
             try {
+                position = Integer.valueOf(params[1]);
                 Log.d("picture_url check", params[0]);
                 URL url = new URL(params[0]);
                 HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -204,20 +221,23 @@ public class CheapListFragment extends Fragment {
                 Log.e("Error", e.getMessage());
                 e.printStackTrace();
             }
+
+            listData[position].picture=bitmap;
             return bitmap;
         }
-
+        /*
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
-            ImageView img = (ImageView)LayoutInflater.from(getContext()).inflate(R.layout.listview, null).findViewById(R.id.img);
+            ImageView img = (ImageView)view.findViewById(R.id.img);
             img.setImageBitmap(bitmap);
         }
-    }
+    }*/
 
     private class ListData {
 
         String picture_url;
+        Bitmap picture;
         String price;
         String product;
         String source;
