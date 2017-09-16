@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">tokentest</string>
+
+    <string-array name="product">
+        <item>衛生紙</item>
+        <item>粉餅</item>
+        <item>背包</item>
+    </string-array>
+</resources>
