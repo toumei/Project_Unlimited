@@ -64,14 +64,12 @@ public class MainActivity extends AppCompatActivity  {
     private ViewPager viewPager;
     private String sel;
     private SearchView searchview;
-    private BarChart chart;
     public List<String> key,value;
 
     //from call api
     //private TextView tv;
     //private Button btn;
     private String access_token = "";
-    private String tokenGet = "";
     private String method = "GET";
     private String record = "衛生紙";
     //private TextView choice;
@@ -82,8 +80,6 @@ public class MainActivity extends AppCompatActivity  {
     //private ListView pro_List;
     //private LinearLayout layout;
     private String tokenAPI ="http://163.13.127.98:8088/api/auth";
-    //private String pro_API = "http://163.13.127.98:8088/api/v1.0/find_cheapest";
-    //private String chartAPI = "http://163.13.127.98:8088/api/price_data";
     private String[] infoStr = {"img","name","price","web","url","date"};
     private int[] infoID = {R.id.img,R.id.name,R.id.price,R.id.web,R.id.url,R.id.date};
     private ListAdapter listAdapter;
@@ -201,6 +197,7 @@ public class MainActivity extends AppCompatActivity  {
             super(supportFragmentManager);
         }
 
+        //回傳Fragment
         @Override
         public Fragment getItem(int position) {
             switch (position){
@@ -222,13 +219,6 @@ public class MainActivity extends AppCompatActivity  {
         public CharSequence getPageTitle (int position){
             return fragments[position] ;
         }
-    }
-
-
-    private class BarChart {
-    }
-
-    private class BarData {
     }
 
     //AsyncTask<傳入值型態, 更新進度型態, 結果型態>
@@ -254,33 +244,35 @@ public class MainActivity extends AppCompatActivity  {
                 httpPost.setHeader("Accept", "application/json");
                 httpPost.setHeader("Content-type", "application/json");
                 HttpResponse httpResponse = httpClient.execute(httpPost);
-                /*HttpGet httpGet = new HttpGet(params[0]);
-                httpGet.setHeader("Authorization",basicAuth);
-                HttpResponse httpResponse = httpClient.execute(httpGet);*/
                 String responseString = EntityUtils.toString(httpResponse.getEntity(),"UTF-8");
                 JSONObject responseJSON = new JSONObject(responseString);
-                tokenGet = responseJSON.getString("access_token");
-                Log.d("tokenTest",tokenGet);
+                access_token = responseJSON.getString("access_token");
+                Log.d("tokenTest",access_token);
             } catch (Exception e) {
-                Log.d("tokenTest",tokenGet);
+                Log.d("tokenTest",access_token);
                 e.printStackTrace();
             }
-            return tokenGet;
+            return access_token;
         }
 
+        //執行後的工作
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            access_token = tokenGet;
 
             Log.d("setTest",access_token);
+
+            //註冊廣播
             registerReceiver(tokenBroadcast, new IntentFilter(TOKEN_MESSAGE));
             Intent intent = new Intent();
             intent.setAction(TOKEN_MESSAGE);
+
+            //發送廣播
             sendBroadcast(intent);
         }
     }
 
+    //接到廣播後的執行內容
     private BroadcastReceiver tokenBroadcast = new BroadcastReceiver() {
         private final static String TOKEN_MESSAGE = "get access token";
         @Override

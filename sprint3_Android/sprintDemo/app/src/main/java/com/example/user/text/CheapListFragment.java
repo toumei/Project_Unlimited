@@ -42,8 +42,8 @@ public class CheapListFragment extends Fragment {
     private String record = "衛生紙";
     private int DATA_COUNT=0;
     private ListData[] listData;
-    private View view;
 
+    //創造工廠
     public static CheapListFragment newInstance(String access_token)
     {
         Bundle bundle = new Bundle();
@@ -75,15 +75,12 @@ public class CheapListFragment extends Fragment {
         new CheapTask().execute(cheapAPI);
 
         View v = inflater.inflate(R.layout.cheaplistfrag,container,false);
-        view = v;
 
         listView = (ListView)v.findViewById(R.id.listview4);
         //searchView = (SearchView) v.findViewById(R.id.menuSearch);
 
 
 
-        //MyAdapter myAdapter = new MyAdapter();
-        //listView.setAdapter(myAdapter);
 
 
         return v;
@@ -108,6 +105,7 @@ public class CheapListFragment extends Fragment {
                 // json資料處理
                 listData = new ListData[DATA_COUNT];
                 for(int i=0; i<DATA_COUNT; i++){
+                    //取得資料
                     JSONObject data = responseJSON.getJSONObject(i);
                     listData[i] = new ListData();
                     listData[i].picture_url = "https:" + data.getString("picture");
@@ -117,7 +115,7 @@ public class CheapListFragment extends Fragment {
                     listData[i].update_time = data.getString("update_time");
                     listData[i].item_url = "https:" + data.getString("url");
 
-                    // 圖片處理
+                    //url轉換圖片
                     URL url = new URL(listData[i].picture_url);
                     HttpURLConnection connection = (HttpURLConnection)url.openConnection();
                     connection.setDoInput(true);
@@ -138,6 +136,8 @@ public class CheapListFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+
+            //Set List View
             CheapListAdapter listAdapter = new CheapListAdapter();
             listView.setAdapter(listAdapter);
         }
@@ -200,7 +200,7 @@ public class CheapListFragment extends Fragment {
         }
 
     }
-    
+
 
     private class ListData {
 
@@ -213,6 +213,7 @@ public class CheapListFragment extends Fragment {
         String item_url;
 
     }
+
 
     private static class ViewHolder{
         ImageView img;

@@ -36,6 +36,7 @@ public class PriceChartFragment extends Fragment {
     private String chartAPI = "http://163.13.127.98:8088/api/v1.1/price_data";
     private String record = "衛生紙";
 
+    //創造工廠
     public static PriceChartFragment newInstance(String access_token)
     {
         Bundle bundle = new Bundle();
@@ -98,6 +99,7 @@ public class PriceChartFragment extends Fragment {
                 JSONObject dataJSON = responseJSON.getJSONObject("distribution");
                 Log.d("dataTest",responseJSON.toString());
 
+                //獲取資料筆數
                 final int dataCount = dataJSON.length();
                 intKey = new String[dataCount];
                 intValue = new int[dataCount];
@@ -110,14 +112,11 @@ public class PriceChartFragment extends Fragment {
                 for (int i=0;i<dataCount;i++){
                     //取得key
                     String key = stringIterator.next().toString();
-                    //Log.d("get key", key);
                     intKey[i] = key;
+                    //取得資料
                     String value = dataJSON.getString(key);
                     intValue[i] = Integer.parseInt(value);
                 }
-
-                //Log.d("key", Integer.toString(intKey[0]));
-                //Log.d("Value", Integer.toString(intValue[0]));
 
             }catch (Exception e){
                 Log.e("Error", e.getMessage());

@@ -36,6 +36,7 @@ public class RateFragment extends Fragment {
     private String from_time="2017-08-13";
     private String to_time="2017-8-20";
 
+    //創造工廠
     public static RateFragment newInstance(String access_token)
     {
         Bundle bundle = new Bundle();
@@ -91,6 +92,7 @@ public class RateFragment extends Fragment {
                 JSONArray responseJSON = new JSONArray(API.CallAPI("GET", params[0], sendlist, access_token));
                 Log.d("RateDataJSON", responseJSON.toString());
 
+                //取得資料筆數
                 DATA_COUNT = responseJSON.length();
                 rateData = new Double[DATA_COUNT];
                 timeData = new String[DATA_COUNT];
@@ -98,8 +100,8 @@ public class RateFragment extends Fragment {
                 Log.d("DATA_COUNT", Integer.toString(DATA_COUNT));
 
                 //尋訪JSONObject
-
                 for (int i=0;i<DATA_COUNT;i++){
+                    //取得資料
                     JSONObject data = responseJSON.getJSONObject(i);
                     rateData[i] = data.getDouble("rate");
                     timeData[i] = data.getString("update_time");
@@ -135,6 +137,7 @@ public class RateFragment extends Fragment {
             chart.invalidate(); // refresh
         }
 
+        //設定Chart Data
         private void setChartData(ArrayList<Entry> entries){
             for(int i=0; i<DATA_COUNT; i++){
                 entries.add(new Entry((float) i, rateData[i].floatValue() ));
