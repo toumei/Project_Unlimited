@@ -19,9 +19,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * Created by user on 2017/8/2.
