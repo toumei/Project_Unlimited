@@ -18,6 +18,7 @@ public class CheapListPresenter {
         //this.CLModel = model;
         this.CLView = view;
 
+        //call api & get data
         try {
             models = new CheapListInteractor(this, access_token).execute().get();
             DATA_COUNT=models.length;
@@ -30,6 +31,7 @@ public class CheapListPresenter {
 
     }
 
+    //更新View的Adapter
     public void updateAdapter(ListAdapter listAdapter){
 
         CLView.setAdapter(listAdapter);

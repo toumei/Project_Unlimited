@@ -66,6 +66,7 @@ public class CheapListFragment extends Fragment implements CheapListView{
     }
 
 
+    //設定listview的Adapter
     @Override
     public void setAdapter(ListAdapter listAdapter) {
         listView.setAdapter(listAdapter);

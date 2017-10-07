@@ -40,6 +40,7 @@ public class CheapListInteractor extends AsyncTask<Void,Void, CheapListModel[]>{
 
     }
 
+    //call api
     @Override
     protected CheapListModel[] doInBackground(Void... params) {
         try{
@@ -86,8 +87,10 @@ public class CheapListInteractor extends AsyncTask<Void,Void, CheapListModel[]>{
     protected void onPostExecute(CheapListModel[] cheapListModels) {
         super.onPostExecute(cheapListModels);
 
-        //Set List View
+        //傳入資料並建立Adapter
         listAdapter = new CheapListAdapter(DATA_COUNT, listData);
+
+        //Set List View
         presenter.updateAdapter(listAdapter);
     }
 
