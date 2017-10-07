@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:padding="20dp">
+
+        <LinearLayout
+            android:id="@+id/Info_layout_1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/title_1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="商品資訊："
+                android:textSize="20sp" />
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/Barchart"
+                android:layout_width="match_parent"
+                android:layout_height="300dp" />
+
+            <TextView
+                android:id="@+id/aveprice"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:text="平均價格："
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/changeValue"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:text="變化值%："
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/minprice"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:text="最低價格："
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/maxprice"
+                android:layout_width="match_parent"
+                android:layout_height="62dp"
+                android:padding="10dp"
+                android:text="最高價格："
+                android:textSize="15sp" />
+
+        </LinearLayout>
+
+
+    </ScrollView>
+</LinearLayout>
