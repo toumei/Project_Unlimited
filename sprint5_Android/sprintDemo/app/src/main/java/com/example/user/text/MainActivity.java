@@ -27,6 +27,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.example.user.text.cheaplist.CheapListFragment;
+import com.example.user.text.rate.RateFragment;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
