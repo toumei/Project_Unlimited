@@ -27,6 +27,9 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.example.user.text.cheaplist.CheapListFragment;
+import com.example.user.text.rate.RateFragment;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -76,7 +79,9 @@ public class MainActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
+			.build();
+        ImageLoader.getInstance().init(config);
 
         //取得Token
         new TokenTask().execute(tokenAPI);

@@ -1,5 +1,6 @@
 package com.example.user.text.cheaplist;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,10 +49,11 @@ public class CheapListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
-
+        //View v = convertView;
         if(convertView == null){
             holder = new ViewHolder();
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.listview, parent, false);
+
             holder.img = (ImageView) convertView.findViewById(R.id.img);
             holder.name = (TextView) convertView.findViewById(R.id.name);
             holder.price = (TextView) convertView.findViewById(R.id.price);
@@ -66,12 +68,16 @@ public class CheapListAdapter extends BaseAdapter {
 
 
         //listview 內容設定
-        holder.img.setImageBitmap(model[position].picture);
-        holder.name.setText(model[position].product);
-        holder.price.setText(model[position].price);
-        holder.web.setText(model[position].source);
-        holder.url.setText(model[position].item_url);
-        holder.date.setText(model[position].update_time);
+
+            holder.img.setImageBitmap(model[position].picture);
+            holder.name.setText(model[position].product);
+            holder.price.setText(model[position].price);
+            holder.web.setText(model[position].source);
+            holder.url.setText(model[position].item_url);
+            holder.date.setText(model[position].update_time);
+
+
+        //convertView.setTag(holder);
 
         return convertView;
     }
