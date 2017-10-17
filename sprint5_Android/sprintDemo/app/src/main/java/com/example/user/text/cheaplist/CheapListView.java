@@ -1,5 +1,6 @@
 package com.example.user.text.cheaplist;
 
+import android.app.ProgressDialog;
 import android.widget.ListAdapter;
 
 /**
@@ -9,4 +10,8 @@ import android.widget.ListAdapter;
 public interface CheapListView {
 
     void setAdapter(ListAdapter listAdapter);
+    ProgressDialog initProgressDialog();
+    void showProgressDialog();
+    void setProgressDialogMessage(int now, int DATA_COUNT);
+    void dismissProgressDialog();
 }
