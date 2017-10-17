@@ -103,14 +103,15 @@ public class CheapListInteractor extends AsyncTask<Void,Integer, CheapListModel[
     @Override
     protected void onProgressUpdate(Integer... values) {
         //super.onProgressUpdate(values);
-        presenter.setProgressDialogMessage(values[0].intValue(), DATA_COUNT);
+        if(values[0]!=null)
+            presenter.setProgressDialogMessage(values[0].intValue(), DATA_COUNT);
     }
 
     @Override
     protected void onPostExecute(CheapListModel[] cheapListModels) {
         super.onPostExecute(cheapListModels);
         Log.d("check","interactor finish");
-        Log.d("check", listData[0].picture_url);
+        //Log.d("check", listData[0].picture_url);
         //傳入資料並建立Adapter
         listAdapter = new CheapListAdapter(DATA_COUNT, listData);
 
