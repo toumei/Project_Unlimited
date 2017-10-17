@@ -90,6 +90,7 @@ class RateModel extends AsyncTask<String, Void, LineData> {
     @Override
     protected void onPostExecute(LineData lineData) {
         super.onPostExecute(lineData);
+        presenter.updateRate();
 
 
     }

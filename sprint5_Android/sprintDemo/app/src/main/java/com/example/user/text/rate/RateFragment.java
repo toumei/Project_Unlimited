@@ -58,11 +58,12 @@ public class RateFragment extends Fragment  implements RateView{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstenceState){
 
+        View v = inflater.inflate(R.layout.ratefrag,container,false);
         // in this example, a LineChart is initialized from xml
-        chart = (LineChart) getView().findViewById(R.id.Ratechart);
+        chart = (LineChart) v.findViewById(R.id.Ratechart);
 
 
-        return inflater.inflate(R.layout.ratefrag,container,false);
+        return v;
     }
 
     public void updateRate(LineData lineData){
