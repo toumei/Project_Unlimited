@@ -51,12 +51,12 @@ public class CheapListFragment extends Fragment implements CheapListView{
 
         Log.d("access_token", access_token);
 
-        CheapListPresenter CLPresenter = new CheapListPresenter(this, access_token);
+
 
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstenceState){
-
+        CheapListPresenter CLPresenter = new CheapListPresenter(this, access_token);
         View v = inflater.inflate(R.layout.cheaplistfrag,container,false);
 
         listView = (ListView)v.findViewById(R.id.listview4);
