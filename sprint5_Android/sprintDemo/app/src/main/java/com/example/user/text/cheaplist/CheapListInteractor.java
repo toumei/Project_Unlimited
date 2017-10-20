@@ -72,7 +72,7 @@ public class CheapListInteractor extends AsyncTask<Void,Integer, CheapListModel[
                 listData[i] = new CheapListModel();
                 listData[i].picture_url = "https:" + data.getString("picture");
                 listData[i].price = "$" + data.getString("price") + "元";
-                listData[i].product = data.getString("product");
+                listData[i].product = data.getString("name");
                 listData[i].source = data.getString("source");
                 listData[i].update_time = data.getString("update_time");
                 listData[i].item_url = "https:" + data.getString("url");
