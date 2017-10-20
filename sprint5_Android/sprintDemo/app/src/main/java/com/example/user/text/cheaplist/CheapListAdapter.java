@@ -1,6 +1,7 @@
 package com.example.user.text.cheaplist;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,7 +69,8 @@ public class CheapListAdapter extends BaseAdapter {
 
 
         //listview 內容設定
-
+            //Log.d("position", Integer.valueOf(position).toString());
+            //Log.d("position_url", model[position].picture_url);
             holder.img.setImageBitmap(model[position].picture);
             holder.name.setText(model[position].product);
             holder.price.setText(model[position].price);

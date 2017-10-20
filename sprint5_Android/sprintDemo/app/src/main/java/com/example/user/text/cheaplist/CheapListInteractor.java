@@ -73,7 +73,7 @@ public class CheapListInteractor extends AsyncTask<Void,Integer, CheapListModel[
                 listData[i].picture_url = "https:" + data.getString("picture");
                 listData[i].price = "$" + data.getString("price") + "元";
                 listData[i].product = data.getString("name");
-                listData[i].source = data.getString("source");
+                listData[i].source = data.getString("sid");
                 listData[i].update_time = data.getString("update_time");
                 listData[i].item_url = "https:" + data.getString("url");
 
@@ -111,7 +111,7 @@ public class CheapListInteractor extends AsyncTask<Void,Integer, CheapListModel[
     protected void onPostExecute(CheapListModel[] cheapListModels) {
         super.onPostExecute(cheapListModels);
         Log.d("check","interactor finish");
-        //Log.d("check", listData[0].picture_url);
+        //Log.d("check", listData[1].picture_url);
         //傳入資料並建立Adapter
         listAdapter = new CheapListAdapter(DATA_COUNT, listData);
 
