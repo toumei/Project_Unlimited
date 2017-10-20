@@ -33,7 +33,7 @@ public class CheapListInteractor extends AsyncTask<Void,Integer, CheapListModel[
     private CheapListPresenter presenter;
     private ListAdapter listAdapter;
     private String access_token;
-    private String cheapAPI = "http://163.13.127.98:8088/api/v1.1/find_cheapest";
+    private String cheapAPI = "http://163.13.127.98:8088/api/v1.2/find_cheapest";
     private String record = "衛生紙";
     Bitmap bitmap;
     private ImageLoader imageLoader;
@@ -72,8 +72,8 @@ public class CheapListInteractor extends AsyncTask<Void,Integer, CheapListModel[
                 listData[i] = new CheapListModel();
                 listData[i].picture_url = "https:" + data.getString("picture");
                 listData[i].price = "$" + data.getString("price") + "元";
-                listData[i].product = data.getString("product");
-                listData[i].source = data.getString("source");
+                listData[i].product = data.getString("name");
+                listData[i].source = data.getString("sid");
                 listData[i].update_time = data.getString("update_time");
                 listData[i].item_url = "https:" + data.getString("url");
 
@@ -103,14 +103,15 @@ public class CheapListInteractor extends AsyncTask<Void,Integer, CheapListModel[
     @Override
     protected void onProgressUpdate(Integer... values) {
         //super.onProgressUpdate(values);
-        presenter.setProgressDialogMessage(values[0].intValue(), DATA_COUNT);
+        if(values[0]!=null)
+            presenter.setProgressDialogMessage(values[0].intValue(), DATA_COUNT);
     }
 
     @Override
     protected void onPostExecute(CheapListModel[] cheapListModels) {
         super.onPostExecute(cheapListModels);
         Log.d("check","interactor finish");
-        Log.d("check", listData[0].picture_url);
+        //Log.d("check", listData[1].picture_url);
         //傳入資料並建立Adapter
         listAdapter = new CheapListAdapter(DATA_COUNT, listData);
 

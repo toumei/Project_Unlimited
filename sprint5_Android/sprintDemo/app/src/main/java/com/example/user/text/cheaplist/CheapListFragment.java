@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +21,7 @@ import com.example.user.text.R;
  * Created by user on 2017/8/2.;
  */
 
-public class CheapListFragment extends Fragment implements CheapListView{
+public class CheapListFragment extends BaseFragment implements CheapListView{
     private ListView listView;
     private SearchView searchView;
     private ListAdapter listAdapter;
@@ -53,21 +54,29 @@ public class CheapListFragment extends Fragment implements CheapListView{
             Log.d("test", "fail");
         }
 
-        if(CLPresenter == null){
-            CLPresenter = new CheapListPresenter(this, access_token);
-        }
+        //isPrepared = false;
+        //CLPresenter = new CheapListPresenter(this, access_token);
+
 
         Log.d("access_token", access_token);
         pd = initProgressDialog();
 
     }
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstenceState){
 
+
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstenceState){
         View v = inflater.inflate(R.layout.cheaplistfrag,container,false);
         listView = (ListView)v.findViewById(R.id.listview4);
+
+        if(CLPresenter == null) {
+            CLPresenter = new CheapListPresenter(this, access_token);
+        }
+
+        isPrepared = true;
+        loadData();
+
         if(listAdapter!=null){
-            //CLPresenter.initPresenter();
             listView.setAdapter(listAdapter);
         }
 
@@ -76,12 +85,12 @@ public class CheapListFragment extends Fragment implements CheapListView{
         return v;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(listAdapter == null){
+    public void loadData(){
+        if(!isVisiable || !isPrepared){
+            return;
+        }
+        if(listAdapter==null){
             CLPresenter.initPresenter();
-            listView.setAdapter(listAdapter);
         }
     }
 
@@ -94,7 +103,6 @@ public class CheapListFragment extends Fragment implements CheapListView{
                 listView.setAdapter(listAdapter);
             }
         });
-        //listView.setAdapter(listAdapter);
     }
 
     public ProgressDialog initProgressDialog(){
