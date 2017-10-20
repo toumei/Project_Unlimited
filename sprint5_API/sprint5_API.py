@@ -37,7 +37,7 @@ def wordPhasing(keywords) :
 		
 	return keywords
 
-@app.route("/api/v1.1/find_cheapest", methods=['GET'])
+@app.route("/api/v1.2/find_cheapest", methods=['GET'])
 @jwt_required()
 def find_cheapest():
 	# Get parameter from call
@@ -61,13 +61,13 @@ def find_cheapest():
 	resultList = [i.to_dict(["name", "price", "url", "sid", "picture", "update_time"], related_objects=True) for i in result]
 
 	for i in resultList : 
-		i['update_time'] = ("{:%d/%m/%Y}").format(i['update_time'])
+		i['update_time'] = ("{:%Y/%m/%d}").format(i['update_time'])
 		i['sid'] = i['sid'].name
 	
 	# Return JSON array
 	return jsonify(resultList)
 
-@app.route("/api/v1.1/price_data", methods=['GET'])
+@app.route("/api/v1.2/price_data", methods=['GET'])
 @jwt_required()
 def price_data():
 	# Get parameters from call
@@ -108,12 +108,6 @@ def price_data():
 	results = {}
 	for num in cursor : 
 		results[num[1]] = num[0]
-	
-	'''
-	stat = list(get((raw_sql('MIN(p.price) AS min'), raw_sql('MAX(p.price)'), raw_sql('AVG(p.price)')) for p in ViewAll if search in p.product))
-	stat[2] = float(stat[2])
-	stat = dict(zip(('min', max', 'avg'),stat))
-	'''
 
 	query = ("SELECT MIN(price), MAX(price), AVG(price) FROM product WHERE ")
 	for i in range(len(search)):
@@ -127,7 +121,7 @@ def price_data():
 	
 	return jsonify({'distribution':results,'statistic':stat})
 	
-@app.route("/api/v1.1/get_rmb_rate", methods=['GET'])
+@app.route("/api/v1.2/get_rmb_rate", methods=['GET'])
 @jwt_required()
 def get_rmb_rate() :
 	start = request.args.get("from")
@@ -138,10 +132,13 @@ def get_rmb_rate() :
 	result = select(i for i in RMB_rate if i.update_time >= start and i.update_time <= end)[:]
 	resultList = [i.to_dict(exclude='id') for i in result]
 	
+	for i in resultList : 
+		i['update_time'] = ("{:%Y/%m/%d}").format(i['update_time'])
+	
 	# Return JSON array
 	return jsonify(resultList)
 	
-@app.route("/api/v1.1/predict", methods=['GET'])
+@app.route("/api/v1.2/predict", methods=['GET'])
 @jwt_required()
 def get_prediction() :
 	# Get parameters from call
