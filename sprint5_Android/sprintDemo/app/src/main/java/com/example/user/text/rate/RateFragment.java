@@ -21,7 +21,7 @@ public class RateFragment extends Fragment  implements RateView{
     LineChart chart;
     public static final String ACCESS_TOKEN = "access_token";
     private String access_token;
-    private String rateAPI="http://163.13.127.98:8088/api/v1.1/get_rmb_rate";
+    private String rateAPI="http://163.13.127.98:8088/api/v1.2/get_rmb_rate";
 
 
     //創造工廠

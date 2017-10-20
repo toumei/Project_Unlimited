@@ -30,7 +30,7 @@ class RateModel extends AsyncTask<String, Void, LineData> {
     private String access_token;
     private String from_time = "2017-08-13";
     private String to_time = "2017-8-20";
-    private String rateAPI = "http://163.13.127.98:8088/api/v1.1/get_rmb_rate";
+    private String rateAPI = "http://163.13.127.98:8088/api/v1.2/get_rmb_rate";
 
     RatePresenter presenter;
 

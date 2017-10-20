@@ -33,7 +33,7 @@ public class CheapListInteractor extends AsyncTask<Void,Integer, CheapListModel[
     private CheapListPresenter presenter;
     private ListAdapter listAdapter;
     private String access_token;
-    private String cheapAPI = "http://163.13.127.98:8088/api/v1.1/find_cheapest";
+    private String cheapAPI = "http://163.13.127.98:8088/api/v1.2/find_cheapest";
     private String record = "衛生紙";
     Bitmap bitmap;
     private ImageLoader imageLoader;

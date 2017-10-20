@@ -29,7 +29,7 @@ public class PriceChartFragment extends Fragment {
     BarChart barChart;
     public static final String ACCESS_TOKEN = "access_token";
     private String access_token;
-    private String chartAPI = "http://163.13.127.98:8088/api/v1.1/price_data";
+    private String chartAPI = "http://163.13.127.98:8088/api/v1.2/price_data";
     private String record = "衛生紙";
 
     //創造工廠
