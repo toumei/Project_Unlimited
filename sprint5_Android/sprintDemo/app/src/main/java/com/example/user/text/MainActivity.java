@@ -88,6 +88,12 @@ public class MainActivity extends AppCompatActivity  {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(tokenBroadcast);
+    }
+
     //設定view
     private void setAPPView(){
         //tab畫面隱藏
@@ -171,8 +177,8 @@ public class MainActivity extends AppCompatActivity  {
         //讓icon還原
         searchView.setIconifiedByDefault(true);
         //为该SearchView组件设置事件监听器
-        searchView.setSubmitButtonEnabled(true); //不要有submit 的按鈕
-
+        searchView.setOnQueryTextListener(queryListener);
+        searchView.setSubmitButtonEnabled(true);
 
         return true;
     }
@@ -254,10 +260,10 @@ public class MainActivity extends AppCompatActivity  {
 
             //註冊廣播
             registerReceiver(tokenBroadcast, new IntentFilter(TOKEN_MESSAGE));
-            Intent intent = new Intent();
-            intent.setAction(TOKEN_MESSAGE);
 
             //發送廣播
+            Intent intent = new Intent();
+            intent.setAction(TOKEN_MESSAGE);
             sendBroadcast(intent);
         }
     }
@@ -275,5 +281,23 @@ public class MainActivity extends AppCompatActivity  {
         }
     };
 
+
+    final private SearchView.OnQueryTextListener queryListener = new SearchView.OnQueryTextListener() {
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            Log.d("searchsSubmit", query);
+            Intent intent = new Intent();
+            intent.setAction("send search query");
+            intent.putExtra("query", query);
+            sendBroadcast(intent);
+            return false;
+        }
+    };
 
 }

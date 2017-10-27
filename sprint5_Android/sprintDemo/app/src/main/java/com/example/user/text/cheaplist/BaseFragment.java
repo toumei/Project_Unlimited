@@ -8,9 +8,9 @@ import android.support.v4.app.Fragment;
 
 public abstract class BaseFragment extends Fragment{
     //是否可被看見
-    protected boolean isVisiable;
+    protected boolean isVisible;
     //標誌fragment是否初始完成
-    public boolean isPrepared = false;
+    protected boolean isPrepared = false;
 
     /**
      * 实现Fragment数据的缓加载
@@ -20,10 +20,10 @@ public abstract class BaseFragment extends Fragment{
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (getUserVisibleHint()) {
-            isVisiable = true;
+            isVisible = true;
             onVisible();
         } else {
-            isVisiable = false;
+            isVisible = false;
             onInVisible();
         }
     }

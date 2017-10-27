@@ -1,6 +1,10 @@
 package com.example.user.text.cheaplist;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -30,6 +34,9 @@ public class CheapListFragment extends BaseFragment implements CheapListView{
     private String access_token;
     ProgressDialog pd;
     CheapListPresenter CLPresenter;
+    //接到廣播後的執行內容
+    private BroadcastReceiver searchSubmitBroadcast ;
+
 
     //創造工廠
     public static CheapListFragment newInstance(String access_token)
@@ -61,9 +68,20 @@ public class CheapListFragment extends BaseFragment implements CheapListView{
         Log.d("access_token", access_token);
         pd = initProgressDialog();
 
+
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+    }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstenceState){
         View v = inflater.inflate(R.layout.cheaplistfrag,container,false);
@@ -86,12 +104,29 @@ public class CheapListFragment extends BaseFragment implements CheapListView{
     }
 
     public void loadData(){
-        if(!isVisiable || !isPrepared){
+        if(!isVisible || !isPrepared){
             return;
         }
         if(listAdapter==null){
-            CLPresenter.initPresenter();
+            CLPresenter.callAPI();
         }
+
+        searchSubmitBroadcast = new BroadcastReceiver() {
+            private final static String TOKEN_MESSAGE = "send search query";
+            @Override
+            public void onReceive(Context context, Intent mIntent) {
+                Log.d("action", mIntent.getAction());
+                if(TOKEN_MESSAGE.equals(mIntent.getAction())){
+                    String query = mIntent.getExtras().getString("query");
+                    Log.d("Fragment query", query);
+                    CLPresenter.setKeyword(query);
+                }
+
+            }
+        };
+
+        getActivity().registerReceiver(searchSubmitBroadcast, new IntentFilter("send search query"));
+        Log.d("","registered searchSubmitBroadcast");
     }
 
     //設定listview的Adapter
@@ -134,6 +169,25 @@ public class CheapListFragment extends BaseFragment implements CheapListView{
                 pd.dismiss();
             }
         });
+    }
+
+    @Override
+    protected void onInVisible() {
+        super.onInVisible();
+        Log.d("visible test", Boolean.toString(getUserVisibleHint()));
+        if(isVisible || !isPrepared){
+            return;
+        }
+        //getActivity().unregisterReceiver(searchSubmitBroadcast);
+        try {
+            if (searchSubmitBroadcast != null) {
+                getActivity().unregisterReceiver(searchSubmitBroadcast);
+                Log.i("", "searchSubmitBroadcast is unregistered");
+            }
+        } catch (Exception e) {
+            Log.i("", "searchSubmitBroadcast is already unregistered");
+            searchSubmitBroadcast = null;
+        }
     }
 }
 

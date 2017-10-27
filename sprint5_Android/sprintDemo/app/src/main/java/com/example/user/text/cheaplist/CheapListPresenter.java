@@ -13,6 +13,7 @@ public class CheapListPresenter {
     private CheapListModel[] models;
     //private ListAdapter listAdapter;
     private String access_token;
+    private String record;
 
     public CheapListPresenter(CheapListView view, String access_token){
         //this.CLModel = model;
@@ -25,14 +26,7 @@ public class CheapListPresenter {
 
     }
 
-    public void initPresenter(){
-        /*try {
-            models = new CheapListInteractor(CheapListPresenter.this, access_token).execute().get();
-            DATA_COUNT=models.length;
-        }catch (Exception e){
-            e.printStackTrace();
-        }*/
-
+    public void callAPI(){
 
         Thread thread = new Thread(){
             @Override
@@ -40,6 +34,24 @@ public class CheapListPresenter {
                 super.run();
                 try {
                     models = new CheapListInteractor(CheapListPresenter.this, access_token).execute().get();
+                    DATA_COUNT=models.length;
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        thread.start();
+
+    }
+
+    public void callAPI(final String query){
+
+        Thread thread = new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                try {
+                    models = new CheapListInteractor(CheapListPresenter.this, access_token, query).execute().get();
                     DATA_COUNT=models.length;
                 }catch (Exception e){
                     e.printStackTrace();
@@ -71,7 +83,10 @@ public class CheapListPresenter {
         CLView.dismissProgressDialog();
     }
 
-
+    public void setKeyword(String query){
+        //this.record = query;
+        this.callAPI(query);
+    }
 
 
 }

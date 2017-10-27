@@ -46,6 +46,14 @@ public class CheapListInteractor extends AsyncTask<Void,Integer, CheapListModel[
 
     }
 
+    public CheapListInteractor(CheapListPresenter presenter, String access_token, String query){
+        this.access_token = access_token;
+        this.presenter = presenter;
+        this.record = query;
+        imageLoader = ImageLoader.getInstance();
+
+    }
+
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
@@ -73,7 +81,7 @@ public class CheapListInteractor extends AsyncTask<Void,Integer, CheapListModel[
                 listData[i].picture_url = "https:" + data.getString("picture");
                 listData[i].price = "$" + data.getString("price") + "元";
                 listData[i].product = data.getString("name");
-                listData[i].source = data.getString("sid");
+                listData[i].source = data.getString("source");
                 listData[i].update_time = data.getString("update_time");
                 listData[i].item_url = "https:" + data.getString("url");
 
