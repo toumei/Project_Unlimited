@@ -1,5 +1,3 @@
-# Testing ORM
-
 from flask import Flask,request,make_response,jsonify
 from werkzeug.contrib.fixers import ProxyFix
 from datetime import timedelta,datetime
@@ -37,6 +35,31 @@ def wordPhasing(keywords) :
 		
 	return keywords
 
+@app.route("/api/v1.2/demand&price", methods=['GET'])
+@jwt_required()
+def demand_price():
+	# Get parameter from call
+	pid = request.args.get("pid")
+	cid = request.args.get("cid")
+	if pid is None and cid is None : 
+		return jsonify("parameter is missing !")
+	elif pid is not None :
+		demand = select(i for i in Sales if i.pid == Product[pid]).first()
+		demand = demand.to_dict()
+		
+		price = select(i for i in Prices if i.pid == Product[pid]).first()
+		price = price.to_dict()
+	else :
+		day = ['day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7', 'day8', 'day9', 'day10']
+		
+		result = select((sum(i.day1), sum(i.day2), sum(i.day3), sum(i.day4), sum(i.day5), sum(i.day6), sum(i.day7), sum(i.day8), sum(i.day9), sum(i.day10)) for i in Sales if i.cid == Category[cid])[:]
+		demand = dict(zip(day,result[0]))
+		
+		result = select((sum(i.day1), sum(i.day2), sum(i.day3), sum(i.day4), sum(i.day5), sum(i.day6), sum(i.day7), sum(i.day8), sum(i.day9), sum(i.day10)) for i in Prices if i.cid == Category[cid])[:]
+		price = dict(zip(day,result[0]))
+	
+	return jsonify({'demand':demand, 'price':price})
+	
 @app.route("/api/v1.2/find_cheapest", methods=['GET'])
 @jwt_required()
 def find_cheapest():
@@ -58,11 +81,13 @@ def find_cheapest():
 		
 	result = query.order_by(Product.price, desc(Product.update_time))[:10]
 	
-	resultList = [i.to_dict(["name", "price", "url", "sid", "picture", "update_time"], related_objects=True) for i in result]
+	resultList = [i.to_dict(["pid", "category", "name", "price", "url", "sid", "picture", "update_time"], related_objects=True) for i in result]
 
 	for i in resultList : 
 		i['update_time'] = ("{:%Y/%m/%d}").format(i['update_time'])
 		i['sid'] = i['sid'].name
+		i['source'] = i.pop('sid')
+		i['cid'] = i.pop('category')
 	
 	# Return JSON array
 	return jsonify(resultList)

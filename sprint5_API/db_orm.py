@@ -9,7 +9,6 @@ logging.basicConfig(filename='sprint5.log', format='%(asctime)s %(levelname)-8s 
 db = Database()
 
 class Crawler_cid(db.Entity):
-	_table_ = 'crawler_cid'
 	sid = Required(int)
 	cid = Required(int)
 	PrimaryKey(sid, cid)
@@ -24,13 +23,14 @@ class Category(db.Entity):
 	id = PrimaryKey(int, auto=True)
 	name = Required(str)
 	products = Set('Product')
-	predictions = Set('Prediction')
-	avg_prices = Set('Avg_price')
-
+	prices = Set('Prices')
+	saless = Set('Sales')
+	
 class Product(db.Entity):
 	pid = PrimaryKey(int, auto=True)
 	name = Required(str)
 	price = Required(int)
+	sale = Required(int)
 	url = Required(str)
 	picture = Required(str)
 	update_time = Required(date, default=lambda: date.today())
@@ -45,12 +45,6 @@ class User(db.Entity):
 	username = Required(str)
 	password = Required(str)
 
-class Prediction(db.Entity):
-	id = PrimaryKey(int, auto=True)
-	category = Required(Category)
-	predict_avg = Required(str)
-	execution_time = Required(datetime)
-
 class Seller(db.Entity):
 	id = PrimaryKey(int, auto=True)
 	raw_id = Required(int, size=64)
@@ -58,11 +52,6 @@ class Seller(db.Entity):
 	score = Required(float)
 	source = Required(Source)
 	products = Set(Product)
-
-class Avg_price(db.Entity):
-	id = PrimaryKey(int, auto=True)
-	avg_price = Required(int)
-	category = Required(Category)
 	
 class RMB_rate (db.Entity):
 	_table_ = 'RMB_rate'
@@ -71,6 +60,7 @@ class RMB_rate (db.Entity):
 
 class Sales(db.Entity):
 	pid = PrimaryKey(Product)
+	cid = Required(Category)
 	day1 = Required(int, sql_default=0)
 	day2 = Required(int, sql_default=0)
 	day3 = Required(int, sql_default=0)
@@ -84,6 +74,7 @@ class Sales(db.Entity):
 
 class Prices(db.Entity):
 	pid = PrimaryKey(Product)
+	cid = Required(Category)
 	day1 = Required(int, sql_default=0)
 	day2 = Required(int, sql_default=0)
 	day3 = Required(int, sql_default=0)
