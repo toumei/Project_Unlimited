@@ -33,8 +33,21 @@ def wordPhasing(keywords) :
 	else :
 		keywords = [keywords]
 		
-	return keywords
+	return (keywords)
 
+@app.route("/api/v1.2/getinfo", methods=['GET'])
+def reorganize() : 
+	q = request.args.get('q')
+	
+	if q == 'find_cheapest':
+		return (find_cheapest())
+	elif q == 'price_data':
+		return (price_data())
+	elif q == 'get_rmb_rate':
+		return (get_rmb_rate())
+	elif q == 'demand,price':
+		return (demand_price())
+	
 @app.route("/api/v1.2/demand&price", methods=['GET'])
 @jwt_required()
 def demand_price():
@@ -42,7 +55,7 @@ def demand_price():
 	pid = request.args.get("pid")
 	cid = request.args.get("cid")
 	if pid is None and cid is None : 
-		return jsonify("parameter is missing !")
+		return jsonify("parameter (pid/cid) is missing !")
 	elif pid is not None :
 		demand = select(i for i in Sales if i.pid == Product[pid]).first()
 		demand = demand.to_dict()
@@ -66,7 +79,7 @@ def find_cheapest():
 	# Get parameter from call
 	search = request.args.get("search")
 	if search is None : 
-		return "parameter search is missing !"
+		return "parameter (search) is missing !"
 	
 	search = wordPhasing(search)
 	source = request.args.get("source", default = "")
@@ -88,6 +101,7 @@ def find_cheapest():
 		i['sid'] = i['sid'].name
 		i['source'] = i.pop('sid')
 		i['cid'] = i.pop('category')
+		i['cid'] = i['cid'].id
 	
 	# Return JSON array
 	return jsonify(resultList)
@@ -98,7 +112,7 @@ def price_data():
 	# Get parameters from call
 	search = request.args.get("search")
 	if search is None : 
-		return "parameter search is missing !"
+		return "parameter (search) is missing !"
 	
 	search = wordPhasing(search)
 	unit = request.args.get("unit", default = 100, type = int)
@@ -150,8 +164,10 @@ def price_data():
 @jwt_required()
 def get_rmb_rate() :
 	start = request.args.get("from")
-	start = datetime.strptime(start, '%Y-%m-%d').date()
 	end = request.args.get("to")
+	if start is None or end is None:
+		return (jsonify("parameter (from & to) is missing !"))
+	start = datetime.strptime(start, '%Y-%m-%d').date()
 	end = datetime.strptime(end, '%Y-%m-%d').date()
 	
 	result = select(i for i in RMB_rate if i.update_time >= start and i.update_time <= end)[:]
@@ -170,7 +186,7 @@ def get_prediction() :
 	search = request.args.get("search")
 	category = request.args.get("category")
 	if search is None and category is None: 
-		return "parameter search / category is required !"
+		return "parameter (search / category) is required !"
 		
 	if category is not None :
 		result = select(i for i in Prediction if i.category == category and i.update_time == date.today()).first()
