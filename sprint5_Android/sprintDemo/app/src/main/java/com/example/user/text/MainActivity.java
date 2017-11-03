@@ -26,6 +26,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import com.example.user.text.PriceChart.PriceChartFragment;
 import com.example.user.text.cheaplist.CheapListFragment;
 import com.example.user.text.rate.RateFragment;
 import com.nostra13.universalimageloader.core.ImageLoader;
