@@ -9,12 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 
 import org.apache.http.NameValuePair;
@@ -23,7 +20,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by user on 2017/8/2.
@@ -33,7 +29,7 @@ public class PriceChartFragment extends Fragment {
     BarChart barChart;
     public static final String ACCESS_TOKEN = "access_token";
     private String access_token;
-    private String chartAPI = "http://163.13.127.98:8088/api/v1.1/price_data";
+    private String chartAPI = "http://163.13.127.98:8088/api/v1.2/price_data";
     private String record = "衛生紙";
 
     //創造工廠

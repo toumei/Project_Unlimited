@@ -13,10 +13,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.SearchView;
@@ -27,31 +25,21 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.formatter.LargeValueFormatter;
+import com.example.user.text.cheaplist.CheapListFragment;
+import com.example.user.text.rate.RateFragment;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity  {
@@ -91,11 +79,19 @@ public class MainActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
+			.build();
+        ImageLoader.getInstance().init(config);
 
         //取得Token
         new TokenTask().execute(tokenAPI);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(tokenBroadcast);
     }
 
     //設定view
@@ -181,8 +177,8 @@ public class MainActivity extends AppCompatActivity  {
         //讓icon還原
         searchView.setIconifiedByDefault(true);
         //为该SearchView组件设置事件监听器
-        searchView.setSubmitButtonEnabled(true); //不要有submit 的按鈕
-
+        searchView.setOnQueryTextListener(queryListener);
+        searchView.setSubmitButtonEnabled(true);
 
         return true;
     }
@@ -264,10 +260,10 @@ public class MainActivity extends AppCompatActivity  {
 
             //註冊廣播
             registerReceiver(tokenBroadcast, new IntentFilter(TOKEN_MESSAGE));
-            Intent intent = new Intent();
-            intent.setAction(TOKEN_MESSAGE);
 
             //發送廣播
+            Intent intent = new Intent();
+            intent.setAction(TOKEN_MESSAGE);
             sendBroadcast(intent);
         }
     }
@@ -285,5 +281,23 @@ public class MainActivity extends AppCompatActivity  {
         }
     };
 
+
+    final private SearchView.OnQueryTextListener queryListener = new SearchView.OnQueryTextListener() {
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            Log.d("searchsSubmit", query);
+            Intent intent = new Intent();
+            intent.setAction("send search query");
+            intent.putExtra("query", query);
+            sendBroadcast(intent);
+            return false;
+        }
+    };
 
 }
